@@ -11,8 +11,11 @@ from piqueserver.commands import command, get_player
 from piqueserver import commands
 from piqueserver.config import ConfigStore
 
-from os.path import normpath, join
+from os.path import realpath, join, commonprefix
 import glob
+
+config = ConfigStore()
+man_dir = join(config.config_dir, 'man')
 
 @command('man', 'manpage')
 def man(self, key1=None, key2=None):
@@ -43,27 +46,25 @@ def apply_script(protocol, connection, config):
             return connection.on_login(self, name)
 
         def show_page(self, manpage, pagesection):
-            if "/" in manpage or "." in manpage:
+            pagepath = realpath(glob.escape(join(man_dir, manpage)))
+
+            if pagesection is None:
+                pagepath = glob.glob("%s.*" % pagepath)[0]
+            else:
+                pagepath += ".%s" % pagesection
+
+            if commonprefix((pagepath, man_dir)) != man_dir:
+                print("[man] Invalid manpage path %s" % pagepath)
                 return "Invalid manual entry name %s" % manpage
 
-            if pagesection is not None:
-                if "/" in pagesection or "." in pagesection:
-                    return "Invalid section number %s" % pagesection
-
-            pagepath = glob.escape(normpath(join(ConfigStore().config_dir, 'man', manpage)))
-
             try:
-                if pagesection is None:
-                    pagepath = glob.glob("%s.*" % pagepath)[0]
-                else:
-                    pagepath += ".%s" % pagesection
-
                 with open(pagepath, 'r') as page:
                     lines = page.readlines()
                     self.send_chat(" ")
                     for l in lines[::-1]:
                         self.send_chat(l)
                     self.send_chat(" ")
+
             except:
                 if pagesection is None:
                     return "No manual entry for %s" % manpage
