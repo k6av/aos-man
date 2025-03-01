@@ -49,7 +49,10 @@ def apply_script(protocol, connection, config):
             pagepath = realpath(glob.escape(join(man_dir, manpage)))
 
             if pagesection is None:
-                pagepath = glob.glob("%s.*" % pagepath)[0]
+                try:
+                    pagepath = glob.glob("%s.*" % pagepath)[0]
+                except IndexError:
+                    return "No manual entry for %s" % manpage
             else:
                 pagepath += ".%s" % pagesection
 
@@ -64,12 +67,12 @@ def apply_script(protocol, connection, config):
                     for l in lines[::-1]:
                         self.send_chat(l)
                     self.send_chat(" ")
-
-            except:
+            except FileNotFoundError:
                 if pagesection is None:
                     return "No manual entry for %s" % manpage
                 else:
                     return "No manual entry for %s(%s)" % (manpage, pagesection)
+
             return
 
     return protocol, ManpageConnection
