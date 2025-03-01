@@ -35,7 +35,7 @@ def man(self, key1=None, key2=None):
         self.send_chat("What manual page do you want?")
         return
 
-    return self.show_page(manpage, pagesection)
+    return self.show_manpage(manpage, pagesection)
 
 
 def apply_script(protocol, connection, config):
@@ -45,7 +45,7 @@ def apply_script(protocol, connection, config):
             self.send_chat("Use the /man command to access reference manuals.")
             return connection.on_login(self, name)
 
-        def show_page(self, manpage, pagesection):
+        def show_manpage(self, manpage, pagesection):
             pagepath = realpath(glob.escape(join(man_dir, manpage)))
 
             if pagesection is None:
