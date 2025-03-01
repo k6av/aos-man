@@ -36,11 +36,6 @@ def man(self, key1=None, key2=None):
 
 
 def apply_script(protocol, connection, config):
-    print('''AoS Manpage Script v1.0.0 loaded
-Copyright © 2025 K6aV // https://github.com/k6av/aos-man
-License AGPLv3+: GNU AGPL version 3 or later <https://gnu.org/licenses/agpl.html>.
-This script is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.''')
     class ManpageConnection(connection):
 
         def on_login(self, name):
