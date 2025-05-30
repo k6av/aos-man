@@ -9,12 +9,11 @@ There is NO WARRANTY, to the extent permitted by law.
 
 from piqueserver.commands import command, get_player
 from piqueserver import commands
-from piqueserver.config import ConfigStore
+from piqueserver.config import config
 
 from os.path import realpath, join, commonprefix
 import glob
 
-config = ConfigStore()
 man_dir = join(config.config_dir, 'man')
 
 @command('man', 'manpage')
